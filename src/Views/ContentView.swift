@@ -19,12 +19,13 @@ struct ContentView: View {
 struct FileDropDelegate: DropDelegate {
     func performDrop(info: DropInfo) -> Bool {
         print("Handling drop event")
-        guard info.hasItemsConforming(to: ["public.file-url"]) else {
+        let supportedTypes = ["public.file-url"]
+        guard info.hasItemsConforming(to: supportedTypes) else {
             return false
         }
 
-        if let item = info.itemProviders(for: ["public.file-url"]).first {
-            item.loadItem(forTypeIdentifier: "public.file-url", options: nil) { (urlData, error) in
+        if let item = info.itemProviders(for: supportedTypes).first {
+            item.loadItem(forTypeIdentifier: supportedTypes[0], options: nil) { (urlData, error) in
                 DispatchQueue.main.async {
                     if let urlData = urlData as? Data {
                         let fileUrl = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
@@ -44,7 +45,8 @@ struct DropTargetView: View {
     var body: some View {
         ZStack {
             let radius: CGFloat = 20
-            let backgroundRectangle = RoundedRectangle(cornerRadius: radius).foregroundColor(Color.gray)
+            let backgroundRectangle = RoundedRectangle(cornerRadius: radius)
+                .foregroundColor(Color.gray)
                 .opacity(0.6)
             RoundedRectangle(cornerRadius: radius)
                 .strokeBorder(Color.gray, lineWidth: 4)

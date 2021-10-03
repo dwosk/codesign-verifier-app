@@ -8,6 +8,6 @@ and installers easier on macOS. Just drag and drop!
 2. CMake 3.21+
 
 ### Build
-1. `git@github.com:dwosk/codesign-verifier-app.git`
+1. `git clone git@github.com:dwosk/codesign-verifier-app.git`
 2. `cd codesign-verifier-app`
 3. `./cbuild`

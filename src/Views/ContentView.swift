@@ -68,6 +68,6 @@ struct ContentView_Previews: PreviewProvider {
         ContentView()
             .preferredColorScheme(.light)
         ContentView()
-            .preferredColorScheme(.light)
+            .preferredColorScheme(.dark)
     }
 }

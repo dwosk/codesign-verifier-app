@@ -13,7 +13,6 @@ struct ContentView: View {
             DropTargetView()
         }
         .frame(width: 400, height: 600)
-        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate())
     }
 }
 
@@ -43,9 +42,22 @@ struct FileDropDelegate: DropDelegate {
 
 struct DropTargetView: View {
     var body: some View {
-        Text("Drop Files here!")
-            .font(.largeTitle)
-            .padding()
+        ZStack {
+            let radius: CGFloat = 20
+            let backgroundRectangle = RoundedRectangle(cornerRadius: radius).foregroundColor(Color.gray)
+                .opacity(0.6)
+            RoundedRectangle(cornerRadius: radius)
+                .strokeBorder(Color.gray, lineWidth: 4)
+                .background(backgroundRectangle)
+
+            VStack {
+                Text("Drop File here!")
+                    .font(.largeTitle)
+                    .padding()
+            }
+        }
+        .padding(.all, 20.0)
+        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate())
     }
 }
 

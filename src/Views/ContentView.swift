@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State var fileUrl: String = ""
     var body: some View {
         ZStack {
-            DropTargetView()
+            if fileUrl.isEmpty {
+                DropTargetView(fileUrl: $fileUrl)
+            } else {
+                Text(fileUrl)
+            }
         }
         .frame(width: 400, height: 600)
     }
 }
 
 struct FileDropDelegate: DropDelegate {
+    @Binding var fileUrl: String
     func performDrop(info: DropInfo) -> Bool {
         print("Handling drop event")
         let supportedTypes = ["public.file-url"]
@@ -28,8 +34,9 @@ struct FileDropDelegate: DropDelegate {
             item.loadItem(forTypeIdentifier: supportedTypes[0], options: nil) { (urlData, error) in
                 DispatchQueue.main.async {
                     if let urlData = urlData as? Data {
-                        let fileUrl = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
-                        print(fileUrl.absoluteURL)
+                        let droppedFile = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
+                        print(droppedFile.absoluteString)
+                        fileUrl = droppedFile.absoluteString
                     }
                 }
             }
@@ -42,6 +49,7 @@ struct FileDropDelegate: DropDelegate {
 }
 
 struct DropTargetView: View {
+    @Binding var fileUrl: String
     var body: some View {
         ZStack {
             let radius: CGFloat = 20
@@ -59,7 +67,7 @@ struct DropTargetView: View {
             }
         }
         .padding(.all, 20.0)
-        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate())
+        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate(fileUrl: $fileUrl))
     }
 }
 

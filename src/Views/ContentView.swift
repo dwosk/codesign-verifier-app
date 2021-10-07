@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    // absolute file URL of the dropped file
     @State var fileUrl: String = ""
     var body: some View {
         ZStack {
@@ -18,6 +19,29 @@ struct ContentView: View {
             }
         }
         .frame(width: 400, height: 600)
+    }
+}
+
+struct DropTargetView: View {
+    @Binding var fileUrl: String
+    var body: some View {
+        ZStack {
+            let radius: CGFloat = 20
+            let backgroundRectangle = RoundedRectangle(cornerRadius: radius)
+                .foregroundColor(Color.gray)
+                .opacity(0.6)
+            RoundedRectangle(cornerRadius: radius)
+                .strokeBorder(Color.gray, lineWidth: 4)
+                .background(backgroundRectangle)
+
+            VStack {
+                Text("Drop File here!")
+                    .font(.largeTitle)
+                    .padding()
+            }
+        }
+        .padding(.all, 20.0)
+        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate(fileUrl: $fileUrl))
     }
 }
 
@@ -45,29 +69,6 @@ struct FileDropDelegate: DropDelegate {
         } else {
             return false
         }
-    }
-}
-
-struct DropTargetView: View {
-    @Binding var fileUrl: String
-    var body: some View {
-        ZStack {
-            let radius: CGFloat = 20
-            let backgroundRectangle = RoundedRectangle(cornerRadius: radius)
-                .foregroundColor(Color.gray)
-                .opacity(0.6)
-            RoundedRectangle(cornerRadius: radius)
-                .strokeBorder(Color.gray, lineWidth: 4)
-                .background(backgroundRectangle)
-
-            VStack {
-                Text("Drop File here!")
-                    .font(.largeTitle)
-                    .padding()
-            }
-        }
-        .padding(.all, 20.0)
-        .onDrop(of: ["public.file-url"], delegate: FileDropDelegate(fileUrl: $fileUrl))
     }
 }
 

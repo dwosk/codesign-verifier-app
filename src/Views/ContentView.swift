@@ -8,18 +8,35 @@
 import SwiftUI
 
 struct ContentView: View {
-    // absolute file URL of the dropped file
+    // Path to the dropped file
     @State var fileUrl: String = ""
     var body: some View {
         ZStack {
             if fileUrl.isEmpty {
                 DropTargetView(fileUrl: $fileUrl)
             } else {
-                Text(fileUrl)
+                CodeSignView(fileUrl: $fileUrl)
             }
         }
         .frame(width: 400, height: 600)
     }
+}
+
+struct CodeSignView: View {
+    @Binding var fileUrl: String
+    var body: some View {
+        Text(fileUrl)
+            .onAppear {
+                execCodeSign(fileUrl: fileUrl)
+            }
+    }
+}
+
+func execCodeSign(fileUrl: String) {
+    let executableURL = URL(fileURLWithPath: "/usr/bin/codesign")
+    try! Process.run(executableURL,
+                     arguments: ["-v", fileUrl],
+                     terminationHandler: nil)
 }
 
 struct DropTargetView: View {
@@ -59,8 +76,8 @@ struct FileDropDelegate: DropDelegate {
                 DispatchQueue.main.async {
                     if let urlData = urlData as? Data {
                         let droppedFile = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
-                        print(droppedFile.absoluteString)
-                        fileUrl = droppedFile.absoluteString
+                        print(droppedFile.path)
+                        fileUrl = droppedFile.path
                     }
                 }
             }

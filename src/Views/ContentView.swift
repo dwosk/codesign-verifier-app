@@ -63,7 +63,7 @@ func execCodeSign(fileUrl: String) {
         print("Output:  \(output)")
         print("Error:  \(error)")
     } catch {
-        print("Unexpected error: \(error).")
+        print("Unexpected error: \(error)")
     }
 }
 
@@ -104,7 +104,7 @@ struct FileDropDelegate: DropDelegate {
                 DispatchQueue.main.async {
                     if let urlData = urlData as? Data {
                         let droppedFile = NSURL(absoluteURLWithDataRepresentation: urlData, relativeTo: nil) as URL
-                        print(droppedFile.path)
+                        print("File: \(droppedFile.path)")
                         fileUrl = droppedFile.path
                     }
                 }

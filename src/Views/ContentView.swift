@@ -33,10 +33,38 @@ struct CodeSignView: View {
 }
 
 func execCodeSign(fileUrl: String) {
-    let executableURL = URL(fileURLWithPath: "/usr/bin/codesign")
-    try! Process.run(executableURL,
-                     arguments: ["-v", fileUrl],
-                     terminationHandler: nil)
+    let task = Process()
+    task.executableURL = URL(fileURLWithPath: "/usr/bin/codesign")
+    task.arguments = ["-vvv", fileUrl]
+
+    let outputPipe = Pipe()
+    let errorPipe = Pipe()
+
+    task.standardOutput = outputPipe
+    task.standardError = errorPipe
+
+    do {
+        try task.run()
+
+        let outputData = outputPipe.fileHandleForReading.readDataToEndOfFile()
+        let errorData = errorPipe.fileHandleForReading.readDataToEndOfFile()
+
+        let output = String(decoding: outputData, as: UTF8.self)
+        let error = String(decoding: errorData, as: UTF8.self)
+
+        task.waitUntilExit()
+        let status = task.terminationStatus
+        if status == 0 {
+            print("Code signature is valid")
+        } else {
+            print("Invalid signature")
+        }
+
+        print("Output:  \(output)")
+        print("Error:  \(error)")
+    } catch {
+        print("Unexpected error: \(error).")
+    }
 }
 
 struct DropTargetView: View {
